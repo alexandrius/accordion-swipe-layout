@@ -93,7 +93,7 @@ Add SwipeLayout into your layout
 
 ### Avaliable attrs:
   1. iconSize
-  2. layout
+  2. layout - pass id of previously created layout
   3. leftItemColors
   4. leftItemIcons
   5. rightItemColors
