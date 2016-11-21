@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer-array name="colorsArr1">
+    <integer-array name="rightColors">
         <item>@color/color1</item>
         <item>@color/color2</item>
         <item>@color/color3</item>
     </integer-array>
 
-    <integer-array name="colorsArr2">
+    <integer-array name="leftColors">
         <item>@color/color4</item>
         <item>@color/color5</item>
         <item>@color/color6</item>
     </integer-array>
 
-    <integer-array name="drawables">
+    <integer-array name="rightDrawables">
         <item>@mipmap/ic_reload</item>
         <item>@mipmap/ic_settings</item>
         <item>@mipmap/ic_trash</item>
     </integer-array>
 
-    <integer-array name="drawables2">
+    <integer-array name="leftDrawables">
         <item>@mipmap/ic_reload</item>
     </integer-array>
 

@@ -13,10 +13,10 @@
         android:layout_height="80dp"
         app:iconSize="@dimen/icon_size"
         app:layout="@layout/sample_item"
-        app:leftItemColors="@array/colorsArr2"
-        app:leftItemIcons="@array/drawables2"
-        app:rightItemColors="@array/colorsArr1"
-        app:rightItemIcons="@array/drawables"
+        app:leftItemColors="@array/leftColors"
+        app:leftItemIcons="@array/leftDrawables"
+        app:rightItemColors="@array/rightColors"
+        app:rightItemIcons="@array/rightDrawables"
         app:swipeItemWidth="@dimen/swipe_item_width" />
 
 </RelativeLayout>
