@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.alexandrius.accordionswipelayout.library.SwipeLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:iconSize="@dimen/icon_size"
+        app:layout="@layout/sample_item"
+        app:leftItemColors="@array/colorsArr2"
+        app:leftItemIcons="@array/drawables2"
+        app:rightItemColors="@array/colorsArr1"
+        app:rightItemIcons="@array/drawables"
+        app:swipeItemWidth="@dimen/swipe_item_width" />
+
+</RelativeLayout>

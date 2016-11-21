@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwipeLayout">
+
+        <attr name="leftItemColors" format="reference" />
+        <attr name="leftItemIcons" format="reference" />
+
+        <attr name="rightItemColors" format="reference" />
+        <attr name="rightItemIcons" format="reference" />
+        <attr name="swipeItemWidth" format="dimension" />
+        <attr name="iconSize" format="dimension" />
+        <attr name="layout" format="reference" />
+
+    </declare-styleable>
+
+
+</resources>
