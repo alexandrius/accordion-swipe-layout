@@ -21,7 +21,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.0.2'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.0.3'
 ```
 
 ## Step 2
