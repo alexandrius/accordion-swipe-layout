@@ -112,6 +112,7 @@ Add SwipeLayout into your layout
   11. textSize
   12. topMargin
   13. bottomMargin
+  14. customFont
 
 
 ## Step 5
