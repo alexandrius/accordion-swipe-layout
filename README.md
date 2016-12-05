@@ -71,6 +71,13 @@ Add custom integer arrays for drawables and swipable item backgrounds
     <integer-array name="leftDrawables">
         <item>@mipmap/ic_reload</item>
     </integer-array>
+
+    <string-array name="rightTexts">
+        <item>@string/reload</item>
+        <item>@string/settings</item>
+        <item>@string/trash</item>
+    </string-array>
+
 </resources>
 ```
 
