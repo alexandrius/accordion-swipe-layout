@@ -1,7 +1,9 @@
 package com.alexandrius.accordionswipelayout.library;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -45,6 +47,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private OnSwipeItemClickListener onSwipeItemClickListener;
 
     private int textColor;
+
+    private static Typeface typeface;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -174,6 +178,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             if (textColor != -1) {
                 textView.setTextColor(textColor);
             }
+
+            if (typeface != null) textView.setTypeface(typeface);
+
             textView.setText(text);
             textView.setGravity(Gravity.CENTER);
             LayoutParams textViewParams = new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
@@ -216,6 +223,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
             int leftTextRes = array.getResourceId(R.styleable.SwipeLayout_leftStrings, -1);
             int rightTextRes = array.getResourceId(R.styleable.SwipeLayout_rightStrings, -1);
+
+            String typefaceAssetPath = array.getString(R.styleable.SwipeLayout_customFont);
+            if (typefaceAssetPath != null) {
+                if (typeface == null) {
+                    AssetManager assetManager = getContext().getAssets();
+                    typeface = Typeface.createFromAsset(assetManager, typefaceAssetPath);
+                }
+            }
 
 
             initiateArrays(rightColorsRes, rightIconsRes, leftColorsRes, leftIconsRes, leftTextRes, rightTextRes);

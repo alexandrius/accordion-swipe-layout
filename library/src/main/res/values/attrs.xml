@@ -16,6 +16,7 @@
         <attr name="textSize" format="dimension" />
         <attr name="topMargin" format="dimension" />
         <attr name="bottomMargin" format="dimension" />
+        <attr name="customFont" format="string" />
 
     </declare-styleable>
 
