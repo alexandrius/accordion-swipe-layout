@@ -11,4 +11,5 @@
     <color name="color4">#00fff2</color>
     <color name="color5">#b69100</color>
     <color name="color6">#00b2ff</color>
+    <color name="textColor">#ffffff</color>
 </resources>

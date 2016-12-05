@@ -17,6 +17,9 @@
         app:leftItemIcons="@array/leftDrawables"
         app:rightItemColors="@array/rightColors"
         app:rightItemIcons="@array/rightDrawables"
-        app:swipeItemWidth="@dimen/swipe_item_width" />
+        app:rightStrings="@array/rightTexts"
+        app:swipeItemWidth="@dimen/swipe_item_width"
+        app:textColor="@color/textColor"
+        app:textSize="@dimen/text_size"/>
 
 </RelativeLayout>

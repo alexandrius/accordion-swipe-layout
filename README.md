@@ -21,7 +21,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.0.1'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.0.2'
 ```
 
 ## Step 2
@@ -91,7 +91,7 @@ Add SwipeLayout into your layout
     app:swipeItemWidth="@dimen/swipe_item_width" />
 ```
 
-### Avaliable attrs:
+### Available attrs:
   1. iconSize
   2. layout - pass id of previously created layout
   3. leftItemColors
@@ -99,6 +99,12 @@ Add SwipeLayout into your layout
   5. rightItemColors
   6. rightItemIcons
   7. swipeItemWidth
+  8. leftStrings
+  9. rightStrings
+  10. textColor
+  11. textSize
+  12. topMargin
+  13. bottomMargin
 
 
 ## Step 5
