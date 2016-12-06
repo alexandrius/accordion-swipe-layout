@@ -14,27 +14,30 @@ public class ResizeAndChangeXAnimation extends Animation {
     private View resizeView;
     private View changeXView;
     private boolean left;
-    private View[] views;
-    private int subViewWidth;
 
-    public ResizeAndChangeXAnimation(View resizeView, int width, View changeXView, boolean left, View[] views) {
+    public ResizeAndChangeXAnimation(View resizeView, int width, View changeXView, boolean left) {
         this.resizeView = resizeView;
         this.width = width;
-        startWidth = resizeView.getWidth();
         this.changeXView = changeXView;
         this.left = left;
-        this.views = views;
-        subViewWidth = views[0].getWidth();
+        setDuration(300);
         setInterpolator(new DecelerateInterpolator());
-        setDuration(150);
     }
+
+    private boolean initial = true;
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-        resizeView.getLayoutParams().width = startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime);
-        resizeView.requestLayout();
+        if (initial) {
+            startWidth = resizeView.getWidth();
+            initial = false;
+        }
 
+        int reqWidth = startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime);
+
+        resizeView.getLayoutParams().width = reqWidth;
+        resizeView.requestLayout();
 
         if (left) {
             changeXView.setX(resizeView.getWidth());
@@ -42,12 +45,8 @@ public class ResizeAndChangeXAnimation extends Animation {
             changeXView.setX(-resizeView.getWidth());
         }
 
-        //UNCOMMENT LINES FOR FUTURE ANIMATION OPTIMISATIONS
-//        for (View v : views) {
-//            v.getLayoutParams().width = subViewWidth + (int) (((float) resizeView.getWidth() / 3 - (float) subViewWidth) * interpolatedTime);
-//            v.requestLayout();
-//        }
 
+//        Log.d("INFO", "startWidth = " + startWidth + " reqWidth = " + reqWidth + " Width = " + resizeView.getWidth() + " X = " + changeXView.getX());
     }
 
     @Override
