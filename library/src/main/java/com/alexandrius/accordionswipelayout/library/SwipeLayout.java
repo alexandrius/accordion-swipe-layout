@@ -496,6 +496,19 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         swipeEnabled = enabled;
     }
 
+
+    public boolean isLeftExpanded() {
+        return mainLayout.getX() < 0;
+    }
+
+    public boolean isRightExpanded() {
+        return mainLayout.getX() > 0;
+    }
+
+    public boolean isExpanded() {
+        return isRightExpanded() || isLeftExpanded();
+    }
+
     @Override
     public void onClick(View view) {
         if (onSwipeItemClickListener != null) {

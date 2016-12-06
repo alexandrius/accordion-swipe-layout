@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         swipeLayout = (SwipeLayout) findViewById(R.id.swipe_layout);
-
         swipeLayout.setOnSwipeItemClickListener(new SwipeLayout.OnSwipeItemClickListener() {
             @Override
             public void onSwipeItemClick(boolean left, int index) {

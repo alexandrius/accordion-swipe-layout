@@ -21,7 +21,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.0.4'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.0.5'
 ```
 
 ## Step 2
@@ -145,6 +145,7 @@ ITEM_STATE_RIGHT_EXPAND
 ITEM_STATE_COLLAPSED
 
 swipeLayout.setItemState(SwipeLayout.ITEM_STATE_LEFT_EXPAND, animated);
+
 ```
 
 That's pretty much it. Thanks
