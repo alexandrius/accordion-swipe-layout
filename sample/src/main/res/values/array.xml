@@ -12,6 +12,12 @@
         <item>@color/color6</item>
     </integer-array>
 
+    <integer-array name="rightTextColors">
+        <item>@color/textColor1</item>
+        <item>@color/textColor2</item>
+        <item>@color/textColor3</item>
+    </integer-array>
+
     <integer-array name="rightDrawables">
         <item>@mipmap/ic_reload</item>
         <item>@mipmap/ic_settings</item>

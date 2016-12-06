@@ -18,8 +18,60 @@
         app:rightItemColors="@array/rightColors"
         app:rightItemIcons="@array/rightDrawables"
         app:rightStrings="@array/rightTexts"
+        app:rightTextColors="@array/rightTextColors"
         app:swipeItemWidth="@dimen/swipe_item_width"
-        app:textColor="@color/textColor"
-        app:textSize="@dimen/text_size"/>
+        app:textSize="@dimen/text_size" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="expandLeftAnimated"
+            android:text="left a" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="expandRightAnimated"
+            android:text="right a" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="expandLeft"
+            android:text="left" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="expandRight"
+            android:text="right" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="collapseAnimated"
+            android:text="close a" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="collapse"
+            android:text="close" />
+
+    </LinearLayout>
 
 </RelativeLayout>

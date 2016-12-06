@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -24,15 +25,15 @@ import android.widget.TextView;
  */
 
 
-//TODO: consider using PercentRelative LAYOUT for optimisations
 public class SwipeLayout extends FrameLayout implements View.OnTouchListener, View.OnClickListener {
 
     private int layoutId;
-
     private int[] leftColors;
     private int[] leftIcons;
     private int[] rightColors;
     private int[] rightIcons;
+    private int[] rightTextColors;
+    private int[] leftTextColors;
     private String[] leftTexts, rightTexts;
 
     private int itemWidth;
@@ -41,14 +42,18 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private LinearLayout rightLinear, leftLinear;
     private int iconSize;
     private float textSize;
-    private int topMargin, bottomMargin;
+    private int textTopMargin;
 
     private View[] rightViews, leftViews;
     private OnSwipeItemClickListener onSwipeItemClickListener;
 
-    private int textColor;
-
     private static Typeface typeface;
+
+    private boolean swipeEnabled = true;
+
+    public static final int ITEM_STATE_LEFT_EXPAND = 0;
+    public static final int ITEM_STATE_RIGHT_EXPAND = 1;
+    public static final int ITEM_STATE_COLLAPSED = 2;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -102,7 +107,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             rightLinear = createLinearLayout(Gravity.RIGHT);
             addView(rightLinear);
             rightViews = new View[rightIcons.length];
-            createAndAddSwipeItems(rightIcons, rightColors, rightTexts, rightLinear, rightViews);
+            createAndAddSwipeItems(rightIcons, rightColors, rightTexts, rightTextColors, rightLinear, rightViews);
         }
 
         if (leftIcons != null) {
@@ -110,11 +115,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             leftLinear = createLinearLayout(Gravity.LEFT);
             addView(leftLinear);
             leftViews = new View[leftIcons.length];
-            createAndAddSwipeItems(leftIcons, leftColors, leftTexts, leftLinear, leftViews);
+            createAndAddSwipeItems(leftIcons, leftColors, leftTexts, leftTextColors, leftLinear, leftViews);
         }
     }
 
-    private void createAndAddSwipeItems(int[] icons, int[] backgroundColors, String[] texts, LinearLayout layout, View[] views) {
+    private void createAndAddSwipeItems(int[] icons, int[] backgroundColors, String[] texts, int[] textColors, LinearLayout layout, View[] views) {
 
         for (int i = 0; i < icons.length; i++) {
             int backgroundColor = -1;
@@ -125,7 +130,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             String txt = null;
             if (texts != null) txt = texts[i];
 
-            ViewGroup swipeItem = createSwipeItem(icons[i], backgroundColor, txt);
+            int textColor = -1;
+            if (textColors != null)
+                textColor = textColors[i];
+
+            ViewGroup swipeItem = createSwipeItem(icons[i], backgroundColor, txt, textColor);
             swipeItem.setClickable(true);
             swipeItem.setFocusable(true);
             swipeItem.setOnClickListener(this);
@@ -143,9 +152,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         return ripple;
     }
 
-    private ViewGroup createSwipeItem(int icon, int backgroundColor, String text) {
-        FrameLayout frameLayout = new FrameLayout(getContext());
+    int id;
 
+    private ViewGroup createSwipeItem(int icon, int backgroundColor, String text, int textColor) {
+        FrameLayout frameLayout = new FrameLayout(getContext());
         //TODO: SWITCH TO HARDLY CALCULATED VALUES INSTEAD OF WEIGHTS FOR FUTURE OPTIMISATIONS
         frameLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 
@@ -163,9 +173,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         ImageView imageView = new ImageView(getContext());
         imageView.setImageResource(icon);
 
-        LayoutParams imageViewParams = new LayoutParams(iconSize, iconSize, text == null ? Gravity.CENTER : Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+        relativeLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
 
-        frameLayout.addView(imageView, imageViewParams);
+        RelativeLayout.LayoutParams imageViewParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
+        imageViewParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        imageView.setId(++id);
+        relativeLayout.addView(imageView, imageViewParams);
 
         if (text != null) {
             TextView textView = new TextView(getContext());
@@ -183,13 +197,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
             textView.setText(text);
             textView.setGravity(Gravity.CENTER);
-            LayoutParams textViewParams = new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-            frameLayout.addView(textView, textViewParams);
+            RelativeLayout.LayoutParams textViewParams = new RelativeLayout.LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            textViewParams.addRule(RelativeLayout.BELOW, id);
+            textViewParams.topMargin = textTopMargin;
+            relativeLayout.addView(textView, textViewParams);
 
-            textViewParams.bottomMargin = bottomMargin;
-            imageViewParams.topMargin = topMargin;
         }
 
+        frameLayout.addView(relativeLayout);
 
         return frameLayout;
     }
@@ -209,11 +224,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             layoutId = array.getResourceId(R.styleable.SwipeLayout_layout, -1);
             itemWidth = array.getDimensionPixelSize(R.styleable.SwipeLayout_swipeItemWidth, 100);
             iconSize = array.getDimensionPixelSize(R.styleable.SwipeLayout_iconSize, ViewGroup.LayoutParams.MATCH_PARENT);
-            textColor = array.getColor(R.styleable.SwipeLayout_textColor, -1);
+
             textSize = array.getDimensionPixelSize(R.styleable.SwipeLayout_textSize, -1);
 
-            bottomMargin = array.getDimensionPixelSize(R.styleable.SwipeLayout_bottomMargin, 20);
-            topMargin = array.getDimensionPixelSize(R.styleable.SwipeLayout_topMargin, 20);
+            textTopMargin = array.getDimensionPixelSize(R.styleable.SwipeLayout_textTopMargin, 20);
+
 
             int rightColorsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemColors, -1);
             int rightIconsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemIcons, -1);
@@ -224,6 +239,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             int leftTextRes = array.getResourceId(R.styleable.SwipeLayout_leftStrings, -1);
             int rightTextRes = array.getResourceId(R.styleable.SwipeLayout_rightStrings, -1);
 
+            int leftTextColorRes = array.getResourceId(R.styleable.SwipeLayout_leftTextColors, -1);
+            int rightTextColorRes = array.getResourceId(R.styleable.SwipeLayout_rightTextColors, -1);
+
             String typefaceAssetPath = array.getString(R.styleable.SwipeLayout_customFont);
             if (typefaceAssetPath != null) {
                 if (typeface == null) {
@@ -233,13 +251,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             }
 
 
-            initiateArrays(rightColorsRes, rightIconsRes, leftColorsRes, leftIconsRes, leftTextRes, rightTextRes);
+            initiateArrays(rightColorsRes, rightIconsRes, leftColorsRes, leftIconsRes, leftTextRes, rightTextRes, leftTextColorRes, rightTextColorRes);
             array.recycle();
         }
 
     }
 
-    private void initiateArrays(int rightColorsRes, int rightIconsRes, int leftColorsRes, int leftIconsRes, int leftTextRes, int rightTextRes) {
+    private void initiateArrays(int rightColorsRes, int rightIconsRes, int leftColorsRes, int leftIconsRes, int leftTextRes, int rightTextRes, int leftTextColorRes, int rightTextColorRes) {
         if (rightColorsRes != -1)
             rightColors = getResources().getIntArray(rightColorsRes);
 
@@ -257,6 +275,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
         if (rightTextRes != -1)
             rightTexts = getResources().getStringArray(rightTextRes);
+
+        if (leftTextColorRes != -1)
+            leftTextColors = getResources().getIntArray(leftTextColorRes);
+
+        if (rightTextColorRes != -1)
+            rightTextColors = getResources().getIntArray(rightTextColorRes);
     }
 
     private int[] fillDrawables(TypedArray ta) {
@@ -273,67 +297,68 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                prevX = event.getRawX();
-                break;
+        if (swipeEnabled) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    prevX = event.getRawX();
+                    break;
 
-            case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_MOVE:
 
-                boolean directionLeft = prevX - event.getRawX() > 0;
-                float delta = Math.abs(prevX - event.getRawX());
+                    boolean directionLeft = prevX - event.getRawX() > 0;
+                    float delta = Math.abs(prevX - event.getRawX());
 
-                int rightLayoutWidth;
-                int leftLayoutWidth;
+                    int rightLayoutWidth;
+                    int leftLayoutWidth;
 
-                if (directionLeft) {
-                    float left = mainLayout.getX() - delta;
+                    if (directionLeft) {
+                        float left = mainLayout.getX() - delta;
 
-                    if (left < -rightLayoutMaxWidth) {
-                        left = -rightLayoutMaxWidth;
+                        if (left < -rightLayoutMaxWidth) {
+                            left = -rightLayoutMaxWidth;
+                        }
+
+                        mainLayout.setX(left);
+
+                        if (rightLinear != null) {
+                            rightLayoutWidth = (int) Math.abs(left - 1);
+                            LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                            params.width = rightLayoutWidth;
+                            rightLinear.setLayoutParams(params);
+
+                        }
+
+                        if (leftLinear != null && left > 0) {
+                            leftLayoutWidth = (int) Math.abs(mainLayout.getX() + 1);
+                            LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                            params.width = leftLayoutWidth;
+                            leftLinear.setLayoutParams(params);
+                        }
+
+
+                    } else {
+                        float right = mainLayout.getX() + delta;
+                        if (right > leftLayoutMaxWidth) {
+                            right = leftLayoutMaxWidth;
+                        }
+
+                        mainLayout.setX(right);
+
+                        if (leftLinear != null && right > 0) {
+                            leftLayoutWidth = (int) Math.abs(right + 1);
+                            LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
+                            params.width = leftLayoutWidth;
+                            leftLinear.setLayoutParams(params);
+                        }
+
+                        if (rightLinear != null) {
+                            rightLayoutWidth = (int) Math.abs(mainLayout.getX() - 1);
+                            LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
+                            params.width = rightLayoutWidth;
+                            rightLinear.setLayoutParams(params);
+
+                        }
                     }
-
-                    mainLayout.setX(left);
-
-                    if (rightLinear != null) {
-                        rightLayoutWidth = (int) Math.abs(left - 1);
-                        LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
-                        params.width = rightLayoutWidth;
-                        rightLinear.setLayoutParams(params);
-
-                    }
-
-                    if (leftLinear != null && left > 0) {
-                        leftLayoutWidth = (int) Math.abs(mainLayout.getX() + 1);
-                        LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
-                        params.width = leftLayoutWidth;
-                        leftLinear.setLayoutParams(params);
-                    }
-
-
-                } else {
-                    float right = mainLayout.getX() + delta;
-                    if (right > leftLayoutMaxWidth) {
-                        right = leftLayoutMaxWidth;
-                    }
-
-                    mainLayout.setX(right);
-
-                    if (leftLinear != null && right > 0) {
-                        leftLayoutWidth = (int) Math.abs(right + 1);
-                        LayoutParams params = (LayoutParams) leftLinear.getLayoutParams();
-                        params.width = leftLayoutWidth;
-                        leftLinear.setLayoutParams(params);
-                    }
-
-                    if (rightLinear != null) {
-                        rightLayoutWidth = (int) Math.abs(mainLayout.getX() - 1);
-                        LayoutParams params = (LayoutParams) rightLinear.getLayoutParams();
-                        params.width = rightLayoutWidth;
-                        rightLinear.setLayoutParams(params);
-
-                    }
-                }
 
 //TODO: UNCOMMENT LINES FOR FUTURE OPTIMISATIONS
 //                if (leftLinear != null)
@@ -350,25 +375,27 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 //                    }
 
 
-                if (delta > itemWidth / 5)
-                    getParent().requestDisallowInterceptTouchEvent(true);
+                    if (delta > itemWidth / 5)
+                        getParent().requestDisallowInterceptTouchEvent(true);
 
-                prevX = event.getRawX();
+                    prevX = event.getRawX();
 
-                break;
+                    break;
 
-            case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_UP:
 
-                finishSwipeAnimated();
-                break;
+                    finishSwipeAnimated();
+                    break;
 
-            case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_CANCEL:
 
-                finishSwipeAnimated();
+                    finishSwipeAnimated();
 
-                break;
+                    break;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void finishSwipeAnimated() {
@@ -400,14 +427,73 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         }
     }
 
+    /**
+     * @deprecated use setItemState()
+     */
+    @Deprecated
     public void closeItem() {
+        collapseItem(true);
+    }
+
+    private void collapseItem(boolean animated) {
         if (leftLinear.getWidth() > 0) {
-            ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(leftLinear, 0, mainLayout, true, leftViews);
-            leftLinear.startAnimation(swipeAnim);
+            if (animated) {
+                ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(leftLinear, 0, mainLayout, true, leftViews);
+                leftLinear.startAnimation(swipeAnim);
+            } else {
+                mainLayout.setX(0);
+                ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
+                params.width = 0;
+                leftLinear.setLayoutParams(params);
+            }
         } else if (rightLinear.getWidth() > 0) {
-            ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(rightLinear, 0, mainLayout, false, rightViews);
-            rightLinear.startAnimation(swipeAnim);
+            if (animated) {
+                ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(rightLinear, 0, mainLayout, false, rightViews);
+                rightLinear.startAnimation(swipeAnim);
+            } else {
+                mainLayout.setX(0);
+                ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
+                params.width = 0;
+                rightLinear.setLayoutParams(params);
+            }
         }
+    }
+
+    public void setItemState(int state, boolean animated) {
+        switch (state) {
+            case ITEM_STATE_COLLAPSED:
+                collapseItem(animated);
+                break;
+            case ITEM_STATE_LEFT_EXPAND:
+                int requiredWidthLeft = leftIcons.length * itemWidth;
+                if (animated) {
+                    ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(leftLinear, requiredWidthLeft, mainLayout, true, leftViews);
+                    leftLinear.startAnimation(swipeAnim);
+                } else {
+                    mainLayout.setX(requiredWidthLeft);
+                    ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
+                    params.width = requiredWidthLeft;
+                    leftLinear.setLayoutParams(params);
+                }
+                break;
+            case ITEM_STATE_RIGHT_EXPAND:
+                int requiredWidthRight = rightIcons.length * itemWidth;
+                if (animated) {
+                    ResizeAndChangeXAnimation swipeAnim = new ResizeAndChangeXAnimation(rightLinear, requiredWidthRight, mainLayout, false, rightViews);
+                    rightLinear.startAnimation(swipeAnim);
+                } else {
+                    mainLayout.setX(-requiredWidthRight);
+                    ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
+                    params.width = requiredWidthRight;
+                    rightLinear.setLayoutParams(params);
+                }
+                break;
+        }
+
+    }
+
+    public void setSwipeEnabled(boolean enabled) {
+        swipeEnabled = enabled;
     }
 
     @Override

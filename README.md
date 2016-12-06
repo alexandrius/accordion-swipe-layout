@@ -103,15 +103,15 @@ Add SwipeLayout into your layout
   2. layout - pass id of previously created layout
   3. leftItemColors
   4. leftItemIcons
-  5. rightItemColors
-  6. rightItemIcons
-  7. swipeItemWidth
-  8. leftStrings
-  9. rightStrings
-  10. textColor
-  11. textSize
-  12. topMargin
-  13. bottomMargin
+  5. leftTextColors
+  6. rightTextColors
+  7. rightItemColors
+  8. rightItemIcons
+  9. swipeItemWidth
+  10. leftStrings
+  11. rightStrings
+  12. textSize
+  13. textTopMargin
   14. customFont
 
 
@@ -135,6 +135,16 @@ swipeLayout.setOnSwipeItemClickListener(new SwipeLayout.OnSwipeItemClickListener
         }
     }
 });
+```
+
+
+### Expand and collapse programmatically
+```java
+ITEM_STATE_LEFT_EXPAND
+ITEM_STATE_RIGHT_EXPAND
+ITEM_STATE_COLLAPSED
+
+swipeLayout.setItemState(SwipeLayout.ITEM_STATE_LEFT_EXPAND, animated);
 ```
 
 That's pretty much it. Thanks
