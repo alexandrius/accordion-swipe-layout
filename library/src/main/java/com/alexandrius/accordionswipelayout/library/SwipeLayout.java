@@ -174,12 +174,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         imageView.setImageResource(icon);
 
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
-        relativeLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+        relativeLayout.setLayoutParams(new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+
 
         RelativeLayout.LayoutParams imageViewParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
         imageViewParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        imageView.setLayoutParams(imageViewParams);
         imageView.setId(++id);
-        relativeLayout.addView(imageView, imageViewParams);
+        relativeLayout.addView(imageView);
 
         if (text != null) {
             TextView textView = new TextView(getContext());
@@ -299,6 +301,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public boolean onTouch(View view, MotionEvent event) {
         if (swipeEnabled) {
             switch (event.getAction()) {
+
                 case MotionEvent.ACTION_DOWN:
                     prevX = event.getRawX();
                     break;
