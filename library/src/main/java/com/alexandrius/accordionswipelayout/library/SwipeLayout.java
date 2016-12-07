@@ -525,11 +525,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
 
     public boolean isLeftExpanded() {
-        return mainLayout.getX() < 0;
+        return mainLayout.getX() > 0;
     }
 
     public boolean isRightExpanded() {
-        return mainLayout.getX() > 0;
+        return mainLayout.getX() < 0;
     }
 
     public boolean isExpanded() {
