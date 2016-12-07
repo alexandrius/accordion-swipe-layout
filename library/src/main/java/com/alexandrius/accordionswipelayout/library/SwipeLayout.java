@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,6 +55,9 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public static final int ITEM_STATE_LEFT_EXPAND = 0;
     public static final int ITEM_STATE_RIGHT_EXPAND = 1;
     public static final int ITEM_STATE_COLLAPSED = 2;
+
+    private static final long ANIMATION_MIN_DURATION = 100;
+    private static final long ANIMATION_MAX_DURATION = 300;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -152,6 +156,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     int id;
+
     private ViewGroup createSwipeItem(int icon, int backgroundColor, String text, int textColor) {
         FrameLayout frameLayout = new FrameLayout(getContext());
         frameLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
@@ -296,6 +301,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     boolean movementStarted;
     long lastTime;
     float speed;
+    float downX = -1;
 
     private void clearAnimations() {
         mainLayout.clearAnimation();
@@ -310,6 +316,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                 case MotionEvent.ACTION_DOWN:
                     prevX = event.getRawX();
+                    downX = prevX;
                     lastTime = System.currentTimeMillis();
                     return true;
 
@@ -324,6 +331,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     directionLeft = prevX - event.getRawX() > 0;
                     float delta = Math.abs(prevX - event.getRawX());
                     speed = (System.currentTimeMillis() - lastTime) / delta;
+                    Log.d("Speed", speed + "");
 
                     int rightLayoutWidth;
                     int leftLayoutWidth;
@@ -402,8 +410,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         getParent().requestDisallowInterceptTouchEvent(false);
         movementStarted = false;
 
-        final LinearLayout animateView;
-        final boolean left;
+        LinearLayout animateView = null;
+        boolean left = false;
         int requiredWidth = 0;
 
         if (mainLayout.getX() > 0) {
@@ -418,7 +426,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 mainLayout.setX(leftLinear.getWidth());
             }
 
-        } else {
+        } else if (mainLayout.getX() < 0) {
             left = false;
             animateView = rightLinear;
             if (rightLinear != null) {
@@ -437,8 +445,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
             long duration = (long) (100 * speed);
 
-            if (duration < 50) duration = 50;
-            else if (duration > 300) duration = 300;
+            if (duration < ANIMATION_MIN_DURATION) duration = ANIMATION_MIN_DURATION;
+            else if (duration > ANIMATION_MAX_DURATION) duration = ANIMATION_MAX_DURATION;
 //
             swipeAnim.setDuration(duration);
             animateView.startAnimation(swipeAnim);
