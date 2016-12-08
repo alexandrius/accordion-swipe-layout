@@ -297,12 +297,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
 
-    float prevX = -1;
+    float prevRawX = -1;
     boolean directionLeft;
     boolean movementStarted;
     long lastTime;
     long downTime;
     float speed;
+    float downRawX;
     float downX, downY;
 
     private void clearAnimations() {
@@ -320,7 +321,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         @Override
         public void run() {
             if (shouldPerformLongClick) {
-                if(performLongClick()) {
+                if (performLongClick()) {
                     longClickPerformed = true;
                     setPressed(false);
                 }
@@ -343,13 +344,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 case MotionEvent.ACTION_DOWN:
                     downX = event.getX();
                     downY = event.getY();
-                    prevX = event.getRawX();
-                    lastTime = System.currentTimeMillis();
-                    downTime = lastTime;
+                    downTime = lastTime = System.currentTimeMillis();
+                    downRawX = prevRawX = event.getRawX();
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Math.abs(prevX - event.getRawX()) < 20 && !movementStarted) {
+                    if (Math.abs(prevRawX - event.getRawX()) < 20 && !movementStarted) {
                         if (System.currentTimeMillis() - lastTime >= 50 && !isPressed() && !isExpanded() && !longClickPerformed) {
                             setPressed(true);
 
@@ -369,8 +369,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                     clearAnimations();
 
-                    directionLeft = prevX - event.getRawX() > 0;
-                    float delta = Math.abs(prevX - event.getRawX());
+                    directionLeft = prevRawX - event.getRawX() > 0;
+                    float delta = Math.abs(prevRawX - event.getRawX());
                     speed = (System.currentTimeMillis() - lastTime) / delta;
 
                     int rightLayoutWidth = 0;
@@ -428,14 +428,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     if (Math.abs(mainLayout.getX()) > itemWidth / 5) {
                         getParent().requestDisallowInterceptTouchEvent(true);
                     }
-                    prevX = event.getRawX();
+                    prevRawX = event.getRawX();
                     lastTime = System.currentTimeMillis();
                     return true;
 
                 case MotionEvent.ACTION_UP:
-                    longClickHandler.removeCallbacks(longClickRunnable);
-                    shouldPerformLongClick = false;
-                    longClickPerformed = false;
+                    finishMotion(event);
                     if (movementStarted) {
                         finishSwipeAnimated();
                     } else {
@@ -450,15 +448,20 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                     return false;
                 case MotionEvent.ACTION_CANCEL:
-                    longClickHandler.removeCallbacks(longClickRunnable);
-                    shouldPerformLongClick = false;
-                    longClickPerformed = false;
+                    finishMotion(event);
                     finishSwipeAnimated();
                     return false;
             }
 
         }
         return false;
+    }
+
+    private void finishMotion(MotionEvent event) {
+        directionLeft = event.getRawX() - downRawX < 0;
+        longClickHandler.removeCallbacks(longClickRunnable);
+        shouldPerformLongClick = false;
+        longClickPerformed = false;
     }
 
     private void finishSwipeAnimated() {
@@ -488,6 +491,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             animateView = rightLinear;
             if (rightLinear != null) {
                 int reqWidth = directionLeft ? rightLayoutMaxWidth / 3 : (rightLayoutMaxWidth - (rightLayoutMaxWidth / 3));
+//                int reqWidth = rightLayoutMaxWidth / 3;
 
                 if (rightLinear.getWidth() >= reqWidth) {
                     requiredWidth = rightLayoutMaxWidth;

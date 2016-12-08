@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alexandrius.accordionswipelayout.library.SwipeLayout;
+
 /**
  * Created by alex on 12/6/16.
  */
@@ -29,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return 30;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, SwipeLayout.OnSwipeItemClickListener {
 
         TextView textView;
 
@@ -38,6 +40,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             textView = (TextView) itemView.findViewById(R.id.recycler_item_tv);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+
+            ((SwipeLayout) itemView).setOnSwipeItemClickListener(this);
         }
 
         @Override
@@ -49,6 +53,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public boolean onLongClick(View view) {
             Toast.makeText(view.getContext(), "Long Clicked at " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             return true;
+        }
+
+        @Override
+        public void onSwipeItemClick(boolean left, int index) {
+            if (left) {
+                Toast.makeText(itemView.getContext(), "Left", Toast.LENGTH_SHORT).show();
+            } else {
+                if (index == 0) {
+                    Toast.makeText(itemView.getContext(), "Reload", Toast.LENGTH_SHORT).show();
+                } else if (index == 1) {
+                    Toast.makeText(itemView.getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                } else if (index == 2) {
+                    Toast.makeText(itemView.getContext(), "Trash", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }
