@@ -1,7 +1,8 @@
 # Accordion Swipe Layout
 
-Easy accordion swipe layout for Android. 
-<img src="http://i.giphy.com/3o6ZsX9bv3ou6IXdcY.gif" width="300">
+Easy accordion swipe layout for Android. Inspired by iOS Mail application
+
+<img src="http://i.giphy.com/l0HlBlo2xWBX8XL32.gif" width="300">
 
 Very easy to use
 
@@ -21,7 +22,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.1.2'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.2.0'
 ```
 
 ## Step 2

@@ -19,7 +19,7 @@
     </integer-array>
 
     <integer-array name="rightDrawables">
-        <item>@mipmap/ic_reload</item>
+        <item>@drawable/ic_reload_colored</item>
         <item>@mipmap/ic_settings</item>
         <item>@mipmap/ic_trash</item>
     </integer-array>

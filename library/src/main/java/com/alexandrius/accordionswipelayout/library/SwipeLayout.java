@@ -6,13 +6,14 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -175,7 +176,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         imageView.setImageResource(icon);
 
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
-        relativeLayout.setLayoutParams(new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+        relativeLayout.setLayoutParams(new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
 
 
         RelativeLayout.LayoutParams imageViewParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
@@ -300,13 +301,38 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     boolean directionLeft;
     boolean movementStarted;
     long lastTime;
+    long downTime;
     float speed;
-    float downX = -1;
+    float downX, downY;
 
     private void clearAnimations() {
         mainLayout.clearAnimation();
         rightLinear.clearAnimation();
         leftLinear.clearAnimation();
+    }
+
+
+    boolean shouldPerformLongClick;
+    boolean longClickPerformed;
+    private Handler longClickHandler = new Handler();
+
+    private Runnable longClickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (shouldPerformLongClick) {
+                if(performLongClick()) {
+                    longClickPerformed = true;
+                    setPressed(false);
+                }
+            }
+        }
+    };
+
+    @Override
+    public void setPressed(boolean pressed) {
+        super.setPressed(pressed);
+        if (Build.VERSION.SDK_INT >= 21)
+            drawableHotspotChanged(downX, downY);
     }
 
     @Override
@@ -315,26 +341,40 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
+                    downX = event.getX();
+                    downY = event.getY();
                     prevX = event.getRawX();
-                    downX = prevX;
                     lastTime = System.currentTimeMillis();
+                    downTime = lastTime;
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
+                    if (Math.abs(prevX - event.getRawX()) < 20 && !movementStarted) {
+                        if (System.currentTimeMillis() - lastTime >= 50 && !isPressed() && !isExpanded() && !longClickPerformed) {
+                            setPressed(true);
 
-                    if (Math.abs(prevX - event.getRawX()) < 10 && !movementStarted) {
+                            if (!shouldPerformLongClick) {
+                                shouldPerformLongClick = true;
+                                longClickHandler.postDelayed(longClickRunnable, ViewConfiguration.getLongPressTimeout());
+                            }
+                        }
+
                         return false;
                     }
+
+                    if (isPressed()) setPressed(false);
+
+                    shouldPerformLongClick = false;
                     movementStarted = true;
+
                     clearAnimations();
 
                     directionLeft = prevX - event.getRawX() > 0;
                     float delta = Math.abs(prevX - event.getRawX());
                     speed = (System.currentTimeMillis() - lastTime) / delta;
-                    Log.d("Speed", speed + "");
 
-                    int rightLayoutWidth;
-                    int leftLayoutWidth;
+                    int rightLayoutWidth = 0;
+                    int leftLayoutWidth = 0;
 
                     if (directionLeft) {
                         float left = mainLayout.getX() - delta;
@@ -388,16 +428,31 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     if (Math.abs(mainLayout.getX()) > itemWidth / 5) {
                         getParent().requestDisallowInterceptTouchEvent(true);
                     }
-
                     prevX = event.getRawX();
-
                     lastTime = System.currentTimeMillis();
                     return true;
+
                 case MotionEvent.ACTION_UP:
-                    finishSwipeAnimated();
+                    longClickHandler.removeCallbacks(longClickRunnable);
+                    shouldPerformLongClick = false;
+                    longClickPerformed = false;
+                    if (movementStarted) {
+                        finishSwipeAnimated();
+                    } else {
+                        movementStarted = false;
+                        setPressed(false);
+                        if (System.currentTimeMillis() - downTime < ViewConfiguration.getTapTimeout()) {
+                            setPressed(true);
+                            performClick();
+                            setPressed(false);
+                        }
+                    }
 
                     return false;
                 case MotionEvent.ACTION_CANCEL:
+                    longClickHandler.removeCallbacks(longClickRunnable);
+                    shouldPerformLongClick = false;
+                    longClickPerformed = false;
                     finishSwipeAnimated();
                     return false;
             }
@@ -407,6 +462,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     private void finishSwipeAnimated() {
+        shouldPerformLongClick = false;
+        setPressed(false);
         getParent().requestDisallowInterceptTouchEvent(false);
         movementStarted = false;
 
