@@ -5,10 +5,8 @@
         <attr name="leftItemColors" format="reference" />
         <attr name="leftItemIcons" format="reference" />
         <attr name="rightItemColors" format="reference" />
-
         <attr name="leftTextColors" format="reference" />
         <attr name="rightTextColors" format="reference" />
-
         <attr name="rightItemIcons" format="reference" />
         <attr name="swipeItemWidth" format="dimension" />
         <attr name="iconSize" format="dimension" />
@@ -18,6 +16,8 @@
         <attr name="textSize" format="dimension" />
         <attr name="textTopMargin" format="dimension" />
         <attr name="customFont" format="string" />
+        <attr name="canFullSwipeFromLeft" format="boolean"/>
+        <attr name="canFullSwipeFromRight" format="boolean"/>
 
     </declare-styleable>
 

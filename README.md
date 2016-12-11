@@ -2,7 +2,7 @@
 
 Easy accordion swipe layout for Android. Inspired by iOS Mail application
 
-<img src="http://i.giphy.com/l0HlBlo2xWBX8XL32.gif" width="300">
+<img src="http://i.giphy.com/l3vR2q08LFkNHDgg8.gif" width="300">
 
 Very easy to use
 
@@ -22,7 +22,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.2.6'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.3.0'
 ```
 
 ## Step 2
@@ -114,7 +114,11 @@ Add SwipeLayout into your layout
   12. textSize
   13. textTopMargin
   14. customFont
+  15. canFullSwipeFromLeft
+  16. canFullSwipeFromRight
 
+canFullSwipeFromLeft - set swipe to maximum width (like in gif preview) from left. Executes listener for first item
+canFullSwipeFromRight - set swipe to maximum width (like in gif preview) from right. Executes listener for last item
 
 ## Step 5
 Add click listener to swipe items

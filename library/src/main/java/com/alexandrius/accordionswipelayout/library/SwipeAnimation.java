@@ -8,14 +8,14 @@ import android.view.animation.Transformation;
 /**
  * Created by Alexander Pataridze on 18/11/2016.
  */
-public class ResizeAndChangeXAnimation extends Animation {
+class SwipeAnimation extends Animation {
     private int width;
-    private int startWidth;
+    private int startWidth = -1;
     private View resizeView;
     private View changeXView;
     private boolean left;
 
-    public ResizeAndChangeXAnimation(View resizeView, int width, View changeXView, boolean left) {
+    SwipeAnimation(View resizeView, int width, View changeXView, boolean left) {
         this.resizeView = resizeView;
         this.width = width;
         this.changeXView = changeXView;
@@ -24,20 +24,15 @@ public class ResizeAndChangeXAnimation extends Animation {
         setInterpolator(new DecelerateInterpolator());
     }
 
-    private boolean initial = true;
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-        if (initial) {
+        if (startWidth < 0) {
             startWidth = resizeView.getWidth();
-            initial = false;
         }
 
-        int reqWidth = startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime);
-
-        resizeView.getLayoutParams().width = reqWidth;
-        resizeView.requestLayout();
+        Utils.setViewWidth(resizeView, startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime));
 
         if (left) {
             changeXView.setX(resizeView.getWidth());
@@ -45,8 +40,6 @@ public class ResizeAndChangeXAnimation extends Animation {
             changeXView.setX(-resizeView.getWidth());
         }
 
-
-//        Log.d("INFO", "startWidth = " + startWidth + " reqWidth = " + reqWidth + " Width = " + resizeView.getWidth() + " X = " + changeXView.getX());
     }
 
     @Override

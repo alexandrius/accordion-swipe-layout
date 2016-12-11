@@ -11,6 +11,7 @@
     app:rightItemColors="@array/rightColors"
     app:rightItemIcons="@array/rightDrawables"
     app:rightStrings="@array/rightTexts"
+    app:canFullSwipeFromRight="true"
     app:rightTextColors="@array/rightTextColors"
     app:swipeItemWidth="@dimen/swipe_item_width"
     app:textSize="@dimen/text_size" />
