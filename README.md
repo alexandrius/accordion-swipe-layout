@@ -1,6 +1,8 @@
-# Accordion Swipe Layout
+# Android Accordion Swipe Layout
 
-Easy accordion swipe layout for Android. Inspired by iOS Mail application
+### Inspired by iOS Mail app
+
+Easy accordion swipe layout for Android.
 
 <img src="http://i.giphy.com/l3vR2q08LFkNHDgg8.gif" width="300">
 
