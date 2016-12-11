@@ -117,8 +117,10 @@ Add SwipeLayout into your layout
   15. canFullSwipeFromLeft
   16. canFullSwipeFromRight
 
-canFullSwipeFromLeft - set swipe to maximum width (like in gif preview) from left. Executes listener for first item
-canFullSwipeFromRight - set swipe to maximum width (like in gif preview) from right. Executes listener for last item
+
+**canFullSwipeFromLeft** - set swipe to maximum width (like in gif preview) from left. Executes listener for first item
+
+**canFullSwipeFromRight** - set swipe to maximum width (like in gif preview) from right. Executes listener for last item
 
 ## Step 5
 Add click listener to swipe items
