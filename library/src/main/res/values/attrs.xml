@@ -6,6 +6,8 @@
         <attr name="leftItemIcons" format="reference" />
         <attr name="rightItemColors" format="reference" />
         <attr name="leftTextColors" format="reference" />
+        <attr name="leftIconColors" format="reference" />
+        <attr name="rightIconColors" format="reference" />
         <attr name="rightTextColors" format="reference" />
         <attr name="rightItemIcons" format="reference" />
         <attr name="swipeItemWidth" format="dimension" />

@@ -2,11 +2,13 @@ package com.alexandrius.accordionswipelayout.library;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,11 +33,15 @@ import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
  */
 public class SwipeLayout extends FrameLayout implements View.OnTouchListener, View.OnClickListener {
 
+    private static final int NO_ID = 0;
+
     private int layoutId;
     private int[] leftColors;
     private int[] leftIcons;
+    private int[] leftIconColors;
     private int[] rightColors;
     private int[] rightIcons;
+    private int[] rightIconColors;
     private int[] rightTextColors;
     private int[] leftTextColors;
     private String[] leftTexts, rightTexts;
@@ -92,12 +98,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     private void setUpView() {
-        if (layoutId != -1) {
+        if (layoutId != -NO_ID) {
             mainLayout = LayoutInflater.from(getContext()).inflate(layoutId, null);
         }
         if (mainLayout != null) {
             compareArrays(leftColors, leftIcons);
             compareArrays(rightColors, rightIcons);
+            compareArrays(leftIconColors, leftIcons);
+            compareArrays(rightIconColors, rightIcons);
 
 
             addView(mainLayout);
@@ -127,7 +135,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             addView(rightLinear);
             rightViews = new View[rightIcons.length];
             rightLinear.addView(rightLinearWithoutLast);
-            addSwipeItems(rightIcons, rightColors, rightTexts, rightTextColors, rightLinear, rightLinearWithoutLast, rightViews, false);
+            addSwipeItems(rightIcons, rightIconColors, rightColors, rightTexts, rightTextColors, rightLinear, rightLinearWithoutLast, rightViews, false);
         }
 
         if (leftIcons != null) {
@@ -137,29 +145,32 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             leftLinearWithoutFirst.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, leftIcons.length - 1));
             leftViews = new View[leftIcons.length];
             addView(leftLinear);
-            addSwipeItems(leftIcons, leftColors, leftTexts, leftTextColors, leftLinear, leftLinearWithoutFirst, leftViews, true);
+            addSwipeItems(leftIcons, leftIconColors, leftColors, leftTexts, leftTextColors, leftLinear, leftLinearWithoutFirst, leftViews, true);
             leftLinear.addView(leftLinearWithoutFirst);
         }
     }
 
-    private void addSwipeItems(int[] icons, int[] backgroundColors, String[] texts, int[] textColors,
+    private void addSwipeItems(int[] icons, int[] iconColors, int[] backgroundColors, String[] texts, int[] textColors,
                                LinearLayout layout, LinearLayout layoutWithout, View[] views, boolean left) {
 
         for (int i = 0; i < icons.length; i++) {
-            int backgroundColor = -1;
+            int backgroundColor = NO_ID;
             if (backgroundColors != null) {
                 backgroundColor = backgroundColors[i];
             }
 
+            int iconColor = NO_ID;
+            if (iconColors != null) iconColor = iconColors[i];
+
             String txt = null;
             if (texts != null) txt = texts[i];
 
-            int textColor = -1;
+            int textColor = NO_ID;
             if (textColors != null)
                 textColor = textColors[i];
 
 
-            ViewGroup swipeItem = createSwipeItem(icons[i], backgroundColor, txt, textColor);
+            ViewGroup swipeItem = createSwipeItem(icons[i], iconColor, backgroundColor, txt, textColor);
             swipeItem.setClickable(true);
             swipeItem.setFocusable(true);
             swipeItem.setOnClickListener(this);
@@ -189,7 +200,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     int id;
 
-    private ViewGroup createSwipeItem(int icon, int backgroundColor, String text, int textColor) {
+    private ViewGroup createSwipeItem(int icon, int iconColor, int backgroundColor, String text, int textColor) {
         FrameLayout frameLayout = new FrameLayout(getContext());
         frameLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
         if (Build.VERSION.SDK_INT >= 16) {
@@ -198,13 +209,17 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             view.setBackground(getRippleDrawable());
             frameLayout.addView(view);
         }
-        if (backgroundColor != -1) {
+        if (backgroundColor != NO_ID) {
             frameLayout.setBackgroundColor(backgroundColor);
         }
 
 
         ImageView imageView = new ImageView(getContext());
-        imageView.setImageResource(icon);
+        Drawable drawable = ContextCompat.getDrawable(getContext(), icon);
+        if (iconColor != NO_ID) {
+            drawable = ViewUtils.setTint(drawable, iconColor);
+        }
+        imageView.setImageDrawable(drawable);
 
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         relativeLayout.setLayoutParams(new LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
@@ -224,7 +239,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
 
-            if (textColor != -1) {
+            if (textColor != NO_ID) {
                 textView.setTextColor(textColor);
             }
 
@@ -256,26 +271,29 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private void setUpAttrs(AttributeSet attrs) {
         final TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.SwipeLayout);
         if (array != null) {
-            layoutId = array.getResourceId(R.styleable.SwipeLayout_layout, -1);
+            layoutId = array.getResourceId(R.styleable.SwipeLayout_layout, NO_ID);
             itemWidth = array.getDimensionPixelSize(R.styleable.SwipeLayout_swipeItemWidth, 100);
             iconSize = array.getDimensionPixelSize(R.styleable.SwipeLayout_iconSize, ViewGroup.LayoutParams.MATCH_PARENT);
-            textSize = array.getDimensionPixelSize(R.styleable.SwipeLayout_textSize, -1);
+            textSize = array.getDimensionPixelSize(R.styleable.SwipeLayout_textSize, NO_ID);
             textTopMargin = array.getDimensionPixelSize(R.styleable.SwipeLayout_textTopMargin, 20);
             canFullSwipeFromRight = array.getBoolean(R.styleable.SwipeLayout_canFullSwipeFromRight, false);
             canFullSwipeFromLeft = array.getBoolean(R.styleable.SwipeLayout_canFullSwipeFromLeft, false);
 
 
-            int rightColorsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemColors, -1);
-            int rightIconsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemIcons, -1);
+            int rightColorsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemColors, NO_ID);
+            int rightIconsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemIcons, NO_ID);
 
-            int leftColorsRes = array.getResourceId(R.styleable.SwipeLayout_leftItemColors, -1);
-            int leftIconsRes = array.getResourceId(R.styleable.SwipeLayout_leftItemIcons, -1);
+            int leftColorsRes = array.getResourceId(R.styleable.SwipeLayout_leftItemColors, NO_ID);
+            int leftIconsRes = array.getResourceId(R.styleable.SwipeLayout_leftItemIcons, NO_ID);
 
-            int leftTextRes = array.getResourceId(R.styleable.SwipeLayout_leftStrings, -1);
-            int rightTextRes = array.getResourceId(R.styleable.SwipeLayout_rightStrings, -1);
+            int leftTextRes = array.getResourceId(R.styleable.SwipeLayout_leftStrings, NO_ID);
+            int rightTextRes = array.getResourceId(R.styleable.SwipeLayout_rightStrings, NO_ID);
 
-            int leftTextColorRes = array.getResourceId(R.styleable.SwipeLayout_leftTextColors, -1);
-            int rightTextColorRes = array.getResourceId(R.styleable.SwipeLayout_rightTextColors, -1);
+            int leftTextColorRes = array.getResourceId(R.styleable.SwipeLayout_leftTextColors, NO_ID);
+            int rightTextColorRes = array.getResourceId(R.styleable.SwipeLayout_rightTextColors, NO_ID);
+
+            int leftIconColors = array.getResourceId(R.styleable.SwipeLayout_leftIconColors, NO_ID);
+            int rightIconColors = array.getResourceId(R.styleable.SwipeLayout_rightIconColors, NO_ID);
 
 
             String typefaceAssetPath = array.getString(R.styleable.SwipeLayout_customFont);
@@ -288,43 +306,33 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
 
             initiateArrays(rightColorsRes, rightIconsRes, leftColorsRes, leftIconsRes,
-                    leftTextRes, rightTextRes, leftTextColorRes, rightTextColorRes);
+                    leftTextRes, rightTextRes, leftTextColorRes, rightTextColorRes, leftIconColors, rightIconColors);
             array.recycle();
         }
 
     }
 
     private void initiateArrays(int rightColorsRes, int rightIconsRes, int leftColorsRes, int leftIconsRes,
-                                int leftTextRes, int rightTextRes, int leftTextColorRes, int rightTextColorRes) {
-        if (rightColorsRes != -1)
-            rightColors = getResources().getIntArray(rightColorsRes);
+                                int leftTextRes, int rightTextRes, int leftTextColorRes, int rightTextColorRes,
+                                int leftIconColorsRes, int rightIconColorsRes) {
+        Resources res = getResources();
 
-        if (rightIconsRes != -1 && !isInEditMode())
-            rightIcons = fillDrawables(getResources().obtainTypedArray(rightIconsRes));
-
-        if (leftColorsRes != -1)
-            leftColors = getResources().getIntArray(leftColorsRes);
-
-        if (leftIconsRes != -1 && !isInEditMode())
-            leftIcons = fillDrawables(getResources().obtainTypedArray(leftIconsRes));
-
-        if (leftTextRes != -1)
-            leftTexts = getResources().getStringArray(leftTextRes);
-
-        if (rightTextRes != -1)
-            rightTexts = getResources().getStringArray(rightTextRes);
-
-        if (leftTextColorRes != -1)
-            leftTextColors = getResources().getIntArray(leftTextColorRes);
-
-        if (rightTextColorRes != -1)
-            rightTextColors = getResources().getIntArray(rightTextColorRes);
+        if (rightColorsRes != NO_ID) rightColors = res.getIntArray(rightColorsRes);
+        if (rightIconsRes != NO_ID && !isInEditMode()) rightIcons = fillDrawables(res.obtainTypedArray(rightIconsRes));
+        if (leftColorsRes != NO_ID) leftColors = res.getIntArray(leftColorsRes);
+        if (leftIconsRes != NO_ID && !isInEditMode()) leftIcons = fillDrawables(res.obtainTypedArray(leftIconsRes));
+        if (leftTextRes != NO_ID) leftTexts = res.getStringArray(leftTextRes);
+        if (rightTextRes != NO_ID) rightTexts = res.getStringArray(rightTextRes);
+        if (leftTextColorRes != NO_ID) leftTextColors = res.getIntArray(leftTextColorRes);
+        if (rightTextColorRes != NO_ID) rightTextColors = res.getIntArray(rightTextColorRes);
+        if (leftIconColorsRes != NO_ID) leftIconColors = res.getIntArray(leftIconColorsRes);
+        if (rightIconColorsRes != NO_ID) rightIconColors = res.getIntArray(rightIconColorsRes);
     }
 
     private int[] fillDrawables(TypedArray ta) {
         int[] drawableArr = new int[ta.length()];
         for (int i = 0; i < ta.length(); i++) {
-            drawableArr[i] = ta.getResourceId(i, -1);
+            drawableArr[i] = ta.getResourceId(i, NO_ID);
         }
         ta.recycle();
         return drawableArr;

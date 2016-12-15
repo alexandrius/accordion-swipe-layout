@@ -19,15 +19,20 @@
     </integer-array>
 
     <integer-array name="rightDrawables">
-        <item>@drawable/ic_reload_colored</item>
+        <item>@mipmap/ic_reload</item>
         <item>@mipmap/ic_settings</item>
         <item>@mipmap/ic_trash</item>
+    </integer-array>
+
+    <integer-array name="rightDrawableColors">
+        <item>@color/textColor1</item>
+        <item>@color/textColor2</item>
+        <item>@color/textColor3</item>
     </integer-array>
 
     <integer-array name="leftDrawables">
         <item>@mipmap/ic_reload</item>
     </integer-array>
-
 
     <string-array name="rightTexts">
         <item>@string/reload</item>

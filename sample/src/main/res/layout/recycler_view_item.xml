@@ -10,6 +10,7 @@
     app:leftItemColors="@array/leftColors"
     app:leftItemIcons="@array/leftDrawables"
     app:rightItemColors="@array/rightColors"
+    app:rightIconColors="@array/rightDrawableColors"
     app:rightItemIcons="@array/rightDrawables"
     app:rightStrings="@array/rightTexts"
     app:rightTextColors="@array/rightTextColors"
