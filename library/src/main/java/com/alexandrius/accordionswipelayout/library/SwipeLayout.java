@@ -74,8 +74,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public SwipeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        if (isInEditMode()) return;
-
         fullSwipeEdgePadding = getResources().getDimensionPixelSize(R.dimen.full_swipe_edge_padding);
 
         if (attrs != null) {
@@ -301,13 +299,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         if (rightColorsRes != -1)
             rightColors = getResources().getIntArray(rightColorsRes);
 
-        if (rightIconsRes != -1)
+        if (rightIconsRes != -1 && !isInEditMode())
             rightIcons = fillDrawables(getResources().obtainTypedArray(rightIconsRes));
 
         if (leftColorsRes != -1)
             leftColors = getResources().getIntArray(leftColorsRes);
 
-        if (leftIconsRes != -1)
+        if (leftIconsRes != -1 && !isInEditMode())
             leftIcons = fillDrawables(getResources().obtainTypedArray(leftIconsRes));
 
         if (leftTextRes != -1)
