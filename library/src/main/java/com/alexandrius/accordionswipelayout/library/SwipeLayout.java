@@ -27,10 +27,8 @@ import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
 
 
 /**
- * Created by alex on 11/18/16.
+ * @author alex, naik
  */
-
-
 public class SwipeLayout extends FrameLayout implements View.OnTouchListener, View.OnClickListener {
 
     private int layoutId;
@@ -86,20 +84,31 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         setUpView();
     }
 
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        if (mainLayout != null) super.addView(child, index, params);
+        else {
+            mainLayout = child;
+            setUpView();
+        }
+    }
+
     private void setUpView() {
-        if (layoutId == -1) {
-            throw new IllegalStateException("Layout id not defined");
+        if (layoutId != -1) {
+            mainLayout = LayoutInflater.from(getContext()).inflate(layoutId, null);
+        }
+        if (mainLayout != null) {
+            compareArrays(leftColors, leftIcons);
+            compareArrays(rightColors, rightIcons);
+
+
+            addView(mainLayout);
+
+            createItemLayouts();
+            mainLayout.bringToFront();
+            mainLayout.setOnTouchListener(this);
         }
 
-        compareArrays(leftColors, leftIcons);
-        compareArrays(rightColors, rightIcons);
-
-        mainLayout = LayoutInflater.from(getContext()).inflate(layoutId, null);
-        addView(mainLayout);
-
-        createItemLayouts();
-        mainLayout.bringToFront();
-        mainLayout.setOnTouchListener(this);
     }
 
     private void compareArrays(int[] arr1, int[] arr2) {
