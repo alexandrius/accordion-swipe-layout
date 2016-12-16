@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -32,6 +34,8 @@ import static com.alexandrius.accordionswipelayout.library.Utils.getViewWeight;
  * @author alex, naik
  */
 public class SwipeLayout extends FrameLayout implements View.OnTouchListener, View.OnClickListener {
+
+    private static final String TAG = "SwipeLayout";
 
     private static final int NO_ID = 0;
 
@@ -61,6 +65,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     private boolean swipeEnabled = true;
     private boolean canFullSwipeFromRight, canFullSwipeFromLeft;
+    private boolean autoHideSwipe = true;
+    private boolean onlyOneSwipe = true;
 
     public static final int ITEM_STATE_LEFT_EXPAND = 0;
     public static final int ITEM_STATE_RIGHT_EXPAND = 1;
@@ -68,6 +74,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     private static final long ANIMATION_MIN_DURATION = 100;
     private static final long ANIMATION_MAX_DURATION = 300;
+    private RecyclerView.OnScrollListener onScrollListener;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -86,6 +93,13 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             setUpAttrs(attrs);
         }
         setUpView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        setAutoHideSwipe(autoHideSwipe);
+        setOnlyOneSwipe(onlyOneSwipe);
     }
 
     @Override
@@ -278,7 +292,8 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             textTopMargin = array.getDimensionPixelSize(R.styleable.SwipeLayout_textTopMargin, 20);
             canFullSwipeFromRight = array.getBoolean(R.styleable.SwipeLayout_canFullSwipeFromRight, false);
             canFullSwipeFromLeft = array.getBoolean(R.styleable.SwipeLayout_canFullSwipeFromLeft, false);
-
+            onlyOneSwipe = array.getBoolean(R.styleable.SwipeLayout_onlyOneSwipe, true);
+            autoHideSwipe = array.getBoolean(R.styleable.SwipeLayout_autoHideSwipe, true);
 
             int rightColorsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemColors, NO_ID);
             int rightIconsRes = array.getResourceId(R.styleable.SwipeLayout_rightItemIcons, NO_ID);
@@ -318,9 +333,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         Resources res = getResources();
 
         if (rightColorsRes != NO_ID) rightColors = res.getIntArray(rightColorsRes);
-        if (rightIconsRes != NO_ID && !isInEditMode()) rightIcons = fillDrawables(res.obtainTypedArray(rightIconsRes));
+        if (rightIconsRes != NO_ID && !isInEditMode())
+            rightIcons = fillDrawables(res.obtainTypedArray(rightIconsRes));
         if (leftColorsRes != NO_ID) leftColors = res.getIntArray(leftColorsRes);
-        if (leftIconsRes != NO_ID && !isInEditMode()) leftIcons = fillDrawables(res.obtainTypedArray(leftIconsRes));
+        if (leftIconsRes != NO_ID && !isInEditMode())
+            leftIcons = fillDrawables(res.obtainTypedArray(leftIconsRes));
         if (leftTextRes != NO_ID) leftTexts = res.getStringArray(leftTextRes);
         if (rightTextRes != NO_ID) rightTexts = res.getStringArray(rightTextRes);
         if (leftTextColorRes != NO_ID) leftTextColors = res.getIntArray(leftTextColorRes);
@@ -459,6 +476,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
                     shouldPerformLongClick = false;
                     movementStarted = true;
+                    collapseOthersIfNeeded();
 
                     clearAnimations();
 
@@ -614,6 +632,27 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
         }
         return false;
+    }
+
+    private void collapseOthersIfNeeded() {
+        ViewParent parent = getParent();
+        if (parent != null && parent instanceof RecyclerView) {
+            RecyclerView recyclerView = (RecyclerView) parent;
+            int count = recyclerView.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View item = recyclerView.getChildAt(i);
+                if (item != this && item instanceof SwipeLayout) {
+                    SwipeLayout swipeLayout = (SwipeLayout) item;
+                    if (swipeLayout.getSwipeableView().getX() != 0 && !swipeLayout.inAnimatedState()) {
+                        swipeLayout.setItemState(ITEM_STATE_COLLAPSED, true);
+                    }
+                }
+            }
+        }
+    }
+
+    public View getSwipeableView() {
+        return mainLayout;
     }
 
     private void finishMotion(MotionEvent event) {
@@ -791,6 +830,41 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         swipeEnabled = enabled;
     }
 
+    public boolean inAnimatedState() {
+        if (leftLinear != null) {
+            Animation anim = leftLinear.getAnimation();
+            if (anim != null && !anim.hasEnded()) return true;
+        }
+        if (rightLinear != null) {
+            Animation anim = rightLinear.getAnimation();
+            if (anim != null && !anim.hasEnded()) return true;
+        }
+        return false;
+    }
+
+    public void setAutoHideSwipe(boolean autoHideSwipe) {
+        this.autoHideSwipe = autoHideSwipe;
+        ViewParent parent = getParent();
+        if (parent != null && parent instanceof RecyclerView) {
+            RecyclerView recyclerView = (RecyclerView) parent;
+            if (onScrollListener != null) recyclerView.removeOnScrollListener(onScrollListener);
+            if (autoHideSwipe) recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING && mainLayout.getX() != 0) {
+                        setItemState(ITEM_STATE_COLLAPSED, true);
+                    }
+                }
+            });
+        } else {
+            Log.e(TAG, "For autoHideSwipe parent must be a RecyclerView");
+        }
+    }
+
+    public void setOnlyOneSwipe(boolean onlyOneSwipe) {
+        this.onlyOneSwipe = onlyOneSwipe;
+    }
 
     public boolean isLeftExpanding() {
         return mainLayout.getX() > 0;
