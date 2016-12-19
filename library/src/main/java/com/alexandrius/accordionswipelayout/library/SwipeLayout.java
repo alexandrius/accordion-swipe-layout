@@ -914,6 +914,23 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         }
     }
 
+    public void collapseAll(boolean animated) {
+        ViewParent parent = getParent();
+        if (parent != null && parent instanceof RecyclerView) {
+            RecyclerView recyclerView = (RecyclerView) parent;
+            int count = recyclerView.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View item = recyclerView.getChildAt(i);
+                if (item instanceof SwipeLayout) {
+                    SwipeLayout swipeLayout = (SwipeLayout) item;
+                    if (swipeLayout.getSwipeableView().getX() != 0) {
+                        swipeLayout.setItemState(ITEM_STATE_COLLAPSED, animated);
+                    }
+                }
+            }
+        }
+    }
+
     public interface OnSwipeItemClickListener {
         void onSwipeItemClick(boolean left, int index);
     }
