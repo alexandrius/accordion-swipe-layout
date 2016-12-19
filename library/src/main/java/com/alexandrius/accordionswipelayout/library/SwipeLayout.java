@@ -635,6 +635,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     private void collapseOthersIfNeeded() {
+        if (!onlyOneSwipe) return;
         ViewParent parent = getParent();
         if (parent != null && parent instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) parent;
