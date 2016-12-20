@@ -47,6 +47,11 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private int[] rightIcons;
     private int[] rightIconColors;
     private int[] rightTextColors;
+
+    public void setLeftColors(int[] leftColors) {
+        this.leftColors = leftColors;
+    }
+
     private int[] leftTextColors;
     private String[] leftTexts, rightTexts;
 
@@ -128,7 +133,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
             mainLayout.bringToFront();
             mainLayout.setOnTouchListener(this);
         }
-
     }
 
     private void compareArrays(int[] arr1, int[] arr2) {
@@ -139,10 +143,14 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         }
     }
 
+    public void invalidateSwipeItems() {
+        createItemLayouts();
+    }
 
     private void createItemLayouts() {
         if (rightIcons != null) {
             rightLayoutMaxWidth = itemWidth * rightIcons.length;
+            if (rightLinear != null) removeView(rightLinear);
             rightLinear = createLinearLayout(Gravity.RIGHT);
             rightLinearWithoutLast = createLinearLayout(Gravity.RIGHT);
             rightLinearWithoutLast.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, rightIcons.length - 1));
@@ -154,6 +162,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
         if (leftIcons != null) {
             leftLayoutMaxWidth = itemWidth * leftIcons.length;
+            if (leftLinear != null) removeView(leftLinear);
             leftLinear = createLinearLayout(Gravity.LEFT);
             leftLinearWithoutFirst = createLinearLayout(Gravity.LEFT);
             leftLinearWithoutFirst.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, leftIcons.length - 1));
@@ -344,6 +353,42 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         if (rightTextColorRes != NO_ID) rightTextColors = res.getIntArray(rightTextColorRes);
         if (leftIconColorsRes != NO_ID) leftIconColors = res.getIntArray(leftIconColorsRes);
         if (rightIconColorsRes != NO_ID) rightIconColors = res.getIntArray(rightIconColorsRes);
+    }
+
+    public void setLeftIcons(int[] leftIcons) {
+        this.leftIcons = leftIcons;
+    }
+
+    public void setLeftIconColors(int[] leftIconColors) {
+        this.leftIconColors = leftIconColors;
+    }
+
+    public void setRightColors(int[] rightColors) {
+        this.rightColors = rightColors;
+    }
+
+    public void setRightIcons(int[] rightIcons) {
+        this.rightIcons = rightIcons;
+    }
+
+    public void setRightIconColors(int[] rightIconColors) {
+        this.rightIconColors = rightIconColors;
+    }
+
+    public void setRightTextColors(int[] rightTextColors) {
+        this.rightTextColors = rightTextColors;
+    }
+
+    public void setLeftTextColors(int[] leftTextColors) {
+        this.leftTextColors = leftTextColors;
+    }
+
+    public void setLeftTexts(String[] leftTexts) {
+        this.leftTexts = leftTexts;
+    }
+
+    public void setRightTexts(String[] rightTexts) {
+        this.rightTexts = rightTexts;
     }
 
     private int[] fillDrawables(TypedArray ta) {
