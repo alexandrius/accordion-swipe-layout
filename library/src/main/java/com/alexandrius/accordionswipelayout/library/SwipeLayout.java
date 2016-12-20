@@ -483,7 +483,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        if (swipeEnabled) {
+        if (swipeEnabled && (leftLinear != null || rightLinear != null)) {
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
