@@ -940,20 +940,24 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     @Override
     public void onClick(View view) {
         if (onSwipeItemClickListener != null) {
-            for (int i = 0; i < leftViews.length; i++) {
-                View v = leftViews[i];
-                if (v == view) {
-                    if (leftViews.length == 1 || getViewWeight(leftLinearWithoutFirst) > 0)
-                        onSwipeItemClickListener.onSwipeItemClick(true, i);
-                    return;
+            if (leftViews != null) {
+                for (int i = 0; i < leftViews.length; i++) {
+                    View v = leftViews[i];
+                    if (v == view) {
+                        if (leftViews.length == 1 || getViewWeight(leftLinearWithoutFirst) > 0)
+                            onSwipeItemClickListener.onSwipeItemClick(true, i);
+                        return;
+                    }
                 }
             }
-            for (int i = 0; i < rightViews.length; i++) {
-                View v = rightViews[i];
-                if (v == view) {
-                    if (rightViews.length == 1 || getViewWeight(rightLinearWithoutLast) > 0)
-                        onSwipeItemClickListener.onSwipeItemClick(false, i);
-                    break;
+            if (rightViews != null) {
+                for (int i = 0; i < rightViews.length; i++) {
+                    View v = rightViews[i];
+                    if (v == view) {
+                        if (rightViews.length == 1 || getViewWeight(rightLinearWithoutLast) > 0)
+                            onSwipeItemClickListener.onSwipeItemClick(false, i);
+                        break;
+                    }
                 }
             }
         }
