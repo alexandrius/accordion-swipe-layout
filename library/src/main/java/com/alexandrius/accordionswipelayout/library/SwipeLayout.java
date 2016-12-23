@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -574,7 +575,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                             }
                         }
 
-                        mainLayout.setX(left);
+                        ViewCompat.setTranslationX(mainLayout, left);
 
                         if (rightLinear != null) {
                             rightLayoutWidth = (int) Math.abs(left);
@@ -630,7 +631,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                             }
                         }
 
-                        mainLayout.setX(right);
+                        ViewCompat.setTranslationX(mainLayout, right);
 
                         if (leftLinear != null && right > 0) {
                             leftLayoutWidth = (int) Math.abs(right);
@@ -739,7 +740,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     }
                 }
 
-                mainLayout.setX(leftLinear.getWidth());
+                ViewCompat.setTranslationX(mainLayout, leftLinear.getWidth());
             }
 
         } else if (mainLayout.getX() < 0) {
@@ -762,7 +763,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     }
                 }
 
-                mainLayout.setX(-rightLinear.getWidth());
+                ViewCompat.setTranslationX(mainLayout, -rightLinear.getWidth());
             }
         }
         long duration = (long) (100 * speed);
@@ -819,7 +820,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, 0, mainLayout, true);
                 leftLinear.startAnimation(swipeAnim);
             } else {
-                mainLayout.setX(0);
+                ViewCompat.setTranslationX(mainLayout, 0);
                 ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
                 params.width = 0;
                 leftLinear.setLayoutParams(params);
@@ -831,7 +832,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                 SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, 0, mainLayout, false);
                 rightLinear.startAnimation(swipeAnim);
             } else {
-                mainLayout.setX(0);
+                ViewCompat.setTranslationX(mainLayout, 0);
                 ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
                 params.width = 0;
                 rightLinear.setLayoutParams(params);
@@ -850,7 +851,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     SwipeAnimation swipeAnim = new SwipeAnimation(leftLinear, requiredWidthLeft, mainLayout, true);
                     leftLinear.startAnimation(swipeAnim);
                 } else {
-                    mainLayout.setX(requiredWidthLeft);
+                    ViewCompat.setTranslationX(mainLayout, requiredWidthLeft);
                     ViewGroup.LayoutParams params = leftLinear.getLayoutParams();
                     params.width = requiredWidthLeft;
                     leftLinear.setLayoutParams(params);
@@ -862,7 +863,7 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     SwipeAnimation swipeAnim = new SwipeAnimation(rightLinear, requiredWidthRight, mainLayout, false);
                     rightLinear.startAnimation(swipeAnim);
                 } else {
-                    mainLayout.setX(-requiredWidthRight);
+                    ViewCompat.setTranslationX(mainLayout, -requiredWidthRight);
                     ViewGroup.LayoutParams params = rightLinear.getLayoutParams();
                     params.width = requiredWidthRight;
                     rightLinear.setLayoutParams(params);
@@ -935,7 +936,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public boolean isExpanded() {
         return isLeftExpanded() || isRightExpanded();
     }
-
 
     @Override
     public void onClick(View view) {
