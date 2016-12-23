@@ -109,6 +109,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        setItemState(ITEM_STATE_COLLAPSED, false);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         if (mainLayout != null) super.addView(child, index, params);
         else {
