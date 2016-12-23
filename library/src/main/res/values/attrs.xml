@@ -6,6 +6,8 @@
         <attr name="leftItemIcons" format="reference" />
         <attr name="rightItemColors" format="reference" />
         <attr name="leftTextColors" format="reference" />
+        <attr name="leftIconColors" format="reference" />
+        <attr name="rightIconColors" format="reference" />
         <attr name="rightTextColors" format="reference" />
         <attr name="rightItemIcons" format="reference" />
         <attr name="swipeItemWidth" format="dimension" />
@@ -18,6 +20,8 @@
         <attr name="customFont" format="string" />
         <attr name="canFullSwipeFromLeft" format="boolean"/>
         <attr name="canFullSwipeFromRight" format="boolean"/>
+        <attr name="autoHideSwipe" format="boolean" />
+        <attr name="onlyOneSwipe" format="boolean" />
 
     </declare-styleable>
 

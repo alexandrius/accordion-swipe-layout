@@ -1,5 +1,6 @@
 package com.alexandrius.accordionswipelayout.library;
 
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -35,9 +36,9 @@ class SwipeAnimation extends Animation {
         Utils.setViewWidth(resizeView, startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime));
 
         if (left) {
-            changeXView.setX(resizeView.getWidth());
+            ViewCompat.setTranslationX(changeXView, resizeView.getWidth());
         } else {
-            changeXView.setX(-resizeView.getWidth());
+            ViewCompat.setTranslationX(changeXView, -resizeView.getWidth());
         }
 
     }
