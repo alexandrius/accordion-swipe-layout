@@ -102,24 +102,24 @@ Add SwipeLayout into your layout
 ```
 
 ### Available attrs:
-  1. iconSize
-  2. layout - pass id of previously created layout
-  3. leftItemColors
-  4. leftItemIcons
-  5. leftTextColors
-  6. rightTextColors
-  7. rightItemColors
-  8. rightItemIcons
-  9. swipeItemWidth
-  10. leftStrings
-  11. rightStrings
-  12. textSize
-  13. textTopMargin
-  14. customFont
-  15. canFullSwipeFromLeft
-  16. canFullSwipeFromRight
-  17. autoHideSwipe - automatically collapse item on scroll
-  18. onlyOneSwipe - automatically collapse other item if expanded
+  1. **iconSize**
+  2. **layout** - pass id of previously created layout
+  3. **leftItemColors**
+  4. **leftItemIcons**
+  5. **leftTextColors**
+  6. **rightTextColors**
+  7. **rightItemColors**
+  8. **rightItemIcons**
+  9. **swipeItemWidth**
+  10. **leftStrings**
+  11. **rightStrings**
+  12. **textSize**
+  13. **textTopMargin**
+  14. **customFont**
+  15. **canFullSwipeFromLeft**
+  16. **canFullSwipeFromRight**
+  17. **autoHideSwipe** - automatically collapse item on scroll
+  18. **onlyOneSwipe** - automatically collapse other item if expanded
 
 
 **canFullSwipeFromLeft** - set swipe to maximum width (like in gif preview) from left. Executes listener for first item
