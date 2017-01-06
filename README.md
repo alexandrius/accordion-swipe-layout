@@ -24,7 +24,7 @@ allprojects {
 
 Add dependency to app gradle
 ```groovy
-compile 'com.github.alexandrius:accordion-swipe-layout:0.3.0'
+compile 'com.github.alexandrius:accordion-swipe-layout:0.4.2'
 ```
 
 ## Step 2
@@ -118,6 +118,8 @@ Add SwipeLayout into your layout
   14. customFont
   15. canFullSwipeFromLeft
   16. canFullSwipeFromRight
+  17. autoHideSwipe - automatically collapse item on scroll
+  18. onlyOneSwipe - automatically collapse other item if expanded
 
 
 **canFullSwipeFromLeft** - set swipe to maximum width (like in gif preview) from left. Executes listener for first item

@@ -883,6 +883,10 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         swipeEnabled = enabled;
     }
 
+    public boolean isSwipeEnabled() {
+        return swipeEnabled;
+    }
+
     public boolean inAnimatedState() {
         if (leftLinear != null) {
             Animation anim = leftLinear.getAnimation();
@@ -901,15 +905,16 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
         if (parent != null && parent instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) parent;
             if (onScrollListener != null) recyclerView.removeOnScrollListener(onScrollListener);
-            if (autoHideSwipe) recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING && ViewCompat.getTranslationX(mainLayout) != 0) {
-                        setItemState(ITEM_STATE_COLLAPSED, true);
+            if (autoHideSwipe)
+                recyclerView.addOnScrollListener(onScrollListener = new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == RecyclerView.SCROLL_STATE_DRAGGING && ViewCompat.getTranslationX(mainLayout) != 0) {
+                            setItemState(ITEM_STATE_COLLAPSED, true);
+                        }
                     }
-                }
-            });
+                });
         } else {
             Log.e(TAG, "For autoHideSwipe parent must be a RecyclerView");
         }
