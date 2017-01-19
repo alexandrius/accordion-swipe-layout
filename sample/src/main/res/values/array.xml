@@ -32,8 +32,8 @@
 
     <integer-array name="leftDrawables">
         <item>@mipmap/ic_reload</item>
-        <!--<item>@mipmap/ic_settings</item>-->
-        <!--<item>@mipmap/ic_trash</item>-->
+        <item>@mipmap/ic_settings</item>
+        <item>@mipmap/ic_trash</item>
     </integer-array>
 
     <string-array name="rightTexts">
