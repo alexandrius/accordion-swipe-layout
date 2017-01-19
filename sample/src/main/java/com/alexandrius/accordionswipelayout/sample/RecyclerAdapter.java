@@ -12,7 +12,7 @@ import com.alexandrius.accordionswipelayout.library.SwipeLayout;
 import java.util.ArrayList;
 
 /**
- * Created by alex on 12/6/16.
+ * Created by Alexander Pataridze
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -35,6 +35,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.textView.setText("Item # " + strings.get(position));
         ((SwipeLayout) holder.itemView).setItemState(SwipeLayout.ITEM_STATE_COLLAPSED, false);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override

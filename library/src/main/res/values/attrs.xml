@@ -12,7 +12,7 @@
         <attr name="rightItemIcons" format="reference" />
         <attr name="swipeItemWidth" format="dimension" />
         <attr name="iconSize" format="dimension" />
-        <attr name="layout" format="reference" />
+        <attr name="foregroundLayout" format="reference" />
         <attr name="leftStrings" format="reference" />
         <attr name="rightStrings" format="reference" />
         <attr name="textSize" format="dimension" />

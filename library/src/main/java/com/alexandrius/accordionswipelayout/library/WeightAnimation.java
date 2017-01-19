@@ -5,7 +5,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 /**
- * Created by alex on 12/10/2016
+ * Created by Alexander Pataridze
  */
 
 class WeightAnimation extends Animation {

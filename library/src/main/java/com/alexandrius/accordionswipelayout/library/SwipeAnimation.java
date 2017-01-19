@@ -6,9 +6,12 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 
+import static com.alexandrius.accordionswipelayout.library.Utils.setViewWidth;
+
 /**
- * Created by Alexander Pataridze on 18/11/2016.
+ * Created by Alexander Pataridze
  */
+
 class SwipeAnimation extends Animation {
     private int width;
     private int startWidth = -1;
@@ -33,7 +36,7 @@ class SwipeAnimation extends Animation {
             startWidth = resizeView.getWidth();
         }
 
-        Utils.setViewWidth(resizeView, startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime));
+        setViewWidth(resizeView, startWidth + (int) (((float) width - (float) startWidth) * interpolatedTime));
 
         if (left) {
             ViewCompat.setTranslationX(changeXView, resizeView.getWidth());

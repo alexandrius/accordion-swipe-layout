@@ -1,10 +1,12 @@
 package com.alexandrius.accordionswipelayout.library;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 
 /**
- * Created by alex on 12/11/2016
+ * Created by Alexander Pataridze
  */
 
 class Utils {
@@ -22,5 +24,16 @@ class Utils {
     static void setViewWidth(View view, int width){
         view.getLayoutParams().width = width;
         view.requestLayout();
+    }
+
+    static void setViewHeight(View view, int height){
+        view.getLayoutParams().height = height;
+        view.requestLayout();
+    }
+
+    static Drawable setTint(Drawable drawable, int color) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        return drawable.mutate();
     }
 }

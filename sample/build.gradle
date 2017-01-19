@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.alexandrius.accordionswipelayout.sample"
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -20,8 +20,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile "com.android.support:recyclerview-v7:25.1.0"
+    compile "com.android.support:appcompat-v7:$compatLibVersion"
+    compile "com.android.support:recyclerview-v7:$compatLibVersion"
 //    compile 'com.github.alexandrius:accordion-swipe-layout:0.2.6'
     compile project(':library')
 }

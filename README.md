@@ -93,7 +93,7 @@ Add SwipeLayout into your layout
     android:layout_width="match_parent"
     android:layout_height="80dp"
     app:iconSize="@dimen/icon_size"
-    app:layout="@layout/sample_item"
+    app:foregroundLayout="@layout/sample_item"
     app:leftItemColors="@array/leftColors"
     app:leftItemIcons="@array/leftDrawables"
     app:rightItemColors="@array/rightColors"
@@ -103,7 +103,7 @@ Add SwipeLayout into your layout
 
 ### Available attrs:
   1. **iconSize**
-  2. **layout** - pass id of previously created layout
+  2. **foregroundLayout** - pass id of previously created layout
   3. **leftItemColors**
   4. **leftItemIcons**
   5. **leftTextColors**

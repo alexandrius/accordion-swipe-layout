@@ -5,18 +5,16 @@
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    app:canFullSwipeFromRight="true"
     app:iconSize="@dimen/icon_size"
     app:leftItemColors="@array/leftColors"
     app:leftItemIcons="@array/leftDrawables"
     app:rightItemColors="@array/rightColors"
     app:rightIconColors="@array/rightDrawableColors"
+    app:canFullSwipeFromLeft="true"
+    app:canFullSwipeFromRight="true"
     app:rightItemIcons="@array/rightDrawables"
     app:rightStrings="@array/rightTexts"
     app:rightTextColors="@array/rightTextColors"
     app:swipeItemWidth="@dimen/swipe_item_width"
-    app:textSize="@dimen/text_size">
-
-    <include layout="@layout/sample_item"/>
-
-</com.alexandrius.accordionswipelayout.library.SwipeLayout>
+    app:foregroundLayout="@layout/sample_item"
+    app:textSize="@dimen/text_size"/>
