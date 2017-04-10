@@ -74,7 +74,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public void onSwipeItemClick(boolean left, int index) {
             if (left) {
-                Toast.makeText(itemView.getContext(), "Left", Toast.LENGTH_SHORT).show();
+                if (((SwipeLayout) itemView).isEnabledAtIndex(true, 0)) {
+                    ((SwipeLayout) itemView).setAlphaAtIndex(true, 0, 0.5f);
+                    ((SwipeLayout) itemView).setEnableAtIndex(true, 0, false);
+                } else {
+                    ((SwipeLayout) itemView).setAlphaAtIndex(true, 0, 1f);
+                    ((SwipeLayout) itemView).setEnableAtIndex(true, 0, true);
+                }
+
             } else {
                 if (index == 0) {
                     Toast.makeText(itemView.getContext(), "Reload", Toast.LENGTH_SHORT).show();
