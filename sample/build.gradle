@@ -22,6 +22,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$compatLibVersion"
     compile "com.android.support:recyclerview-v7:$compatLibVersion"
-    compile 'com.github.alexandrius:accordion-swipe-layout:0.5.1'
-//    compile project(':library')
+//    compile 'com.github.alexandrius:accordion-swipe-layout:0.5.1'
+    compile project(':library')
 }
