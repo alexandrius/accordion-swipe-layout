@@ -73,8 +73,6 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     private static Typeface typeface;
 
     private boolean swipeEnabled = true;
-    private boolean leftSwipeEnabled = true;
-    private boolean rightSwipeEnabled = true;
     private boolean canFullSwipeFromRight, canFullSwipeFromLeft;
     private boolean autoHideSwipe = true;
     private boolean onlyOneSwipe = true;
@@ -589,120 +587,119 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
                     int leftLayoutWidth = 0;
 
                     if (directionLeft) {
-                        if (leftSwipeEnabled) {
-                            float left = ViewCompat.getTranslationX(mainLayout) - delta;
 
-                            if (left < -rightLayoutMaxWidth) {
-                                if (!canFullSwipeFromRight) {
-                                    left = -rightLayoutMaxWidth;
-                                } else if (left < -getWidth()) {
-                                    left = -getWidth();
-                                }
-                            }
+                        float left = ViewCompat.getTranslationX(mainLayout) - delta;
 
-                            if (canFullSwipeFromRight) {
-                                if (ViewCompat.getTranslationX(mainLayout) <= -(getWidth() - fullSwipeEdgePadding)) {
-                                    if (getViewWeight(rightLinearWithoutLast) > 0 &&
-                                            (collapseAnim == null || collapseAnim.hasEnded())) {
-
-                                        view.setPressed(false);
-                                        rightLinearWithoutLast.clearAnimation();
-
-                                        if (expandAnim != null) expandAnim = null;
-
-                                        collapseAnim = new WeightAnimation(0, rightLinearWithoutLast);
-                                        Log.d("WeightAnim", "onTouch - Collapse");
-                                        startAnimation(collapseAnim);
-                                    }
-                                } else {
-                                    if (getViewWeight(rightLinearWithoutLast) < rightIcons.length - 1F &&
-                                            (expandAnim == null || expandAnim.hasEnded())) {
-
-                                        Log.d("WeightAnim", "onTouch - Expand");
-
-                                        view.setPressed(false);
-                                        rightLinearWithoutLast.clearAnimation();
-
-                                        if (collapseAnim != null) collapseAnim = null;
-
-                                        expandAnim = new WeightAnimation(rightIcons.length - 1, rightLinearWithoutLast);
-                                        startAnimation(expandAnim);
-                                    }
-                                }
-                            }
-
-                            ViewCompat.setTranslationX(mainLayout, left);
-
-                            if (rightLinear != null) {
-                                rightLayoutWidth = (int) Math.abs(left);
-                                setViewWidth(rightLinear, rightLayoutWidth);
-                            }
-
-                            if (leftLinear != null && left > 0) {
-                                leftLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
-                                setViewWidth(leftLinear, leftLayoutWidth);
+                        if (left < -rightLayoutMaxWidth) {
+                            if (!canFullSwipeFromRight) {
+                                left = -rightLayoutMaxWidth;
+                            } else if (left < -getWidth()) {
+                                left = -getWidth();
                             }
                         }
+
+                        if (canFullSwipeFromRight) {
+                            if (ViewCompat.getTranslationX(mainLayout) <= -(getWidth() - fullSwipeEdgePadding)) {
+                                if (getViewWeight(rightLinearWithoutLast) > 0 &&
+                                        (collapseAnim == null || collapseAnim.hasEnded())) {
+
+                                    view.setPressed(false);
+                                    rightLinearWithoutLast.clearAnimation();
+
+                                    if (expandAnim != null) expandAnim = null;
+
+                                    collapseAnim = new WeightAnimation(0, rightLinearWithoutLast);
+                                    Log.d("WeightAnim", "onTouch - Collapse");
+                                    startAnimation(collapseAnim);
+                                }
+                            } else {
+                                if (getViewWeight(rightLinearWithoutLast) < rightIcons.length - 1F &&
+                                        (expandAnim == null || expandAnim.hasEnded())) {
+
+                                    Log.d("WeightAnim", "onTouch - Expand");
+
+                                    view.setPressed(false);
+                                    rightLinearWithoutLast.clearAnimation();
+
+                                    if (collapseAnim != null) collapseAnim = null;
+
+                                    expandAnim = new WeightAnimation(rightIcons.length - 1, rightLinearWithoutLast);
+                                    startAnimation(expandAnim);
+                                }
+                            }
+                        }
+
+                        ViewCompat.setTranslationX(mainLayout, left);
+
+                        if (rightLinear != null) {
+                            rightLayoutWidth = (int) Math.abs(left);
+                            setViewWidth(rightLinear, rightLayoutWidth);
+                        }
+
+                        if (leftLinear != null && left > 0) {
+                            leftLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
+                            setViewWidth(leftLinear, leftLayoutWidth);
+                        }
+
                     } else {
-                        if (rightSwipeEnabled) {
-                            float right = ViewCompat.getTranslationX(mainLayout) + delta;
 
-                            if (right > leftLayoutMaxWidth) {
-                                if (!canFullSwipeFromLeft) {
-                                    right = leftLayoutMaxWidth;
-                                } else if (right >= getWidth()) {
-                                    right = getWidth();
-                                }
-                            }
+                        float right = ViewCompat.getTranslationX(mainLayout) + delta;
 
-                            if (canFullSwipeFromLeft) {
-                                if (ViewCompat.getTranslationX(mainLayout) >= getWidth() - fullSwipeEdgePadding) {
-                                    if (getViewWeight(leftLinearWithoutFirst) > 0 &&
-                                            (collapseAnim == null || collapseAnim.hasEnded())) {
-
-                                        leftLinearWithoutFirst.clearAnimation();
-
-                                        if (expandAnim != null) expandAnim = null;
-
-                                        collapseAnim = new WeightAnimation(0, leftLinearWithoutFirst);
-
-                                        startAnimation(collapseAnim);
-                                    }
-                                } else {
-                                    if (getViewWeight(leftLinearWithoutFirst) < leftIcons.length - 1F &&
-                                            (expandAnim == null || expandAnim.hasEnded())) {
-
-                                        leftLinearWithoutFirst.clearAnimation();
-
-                                        if (collapseAnim != null) collapseAnim = null;
-
-                                        expandAnim = new WeightAnimation(leftIcons.length - 1, leftLinearWithoutFirst);
-
-                                        startAnimation(expandAnim);
-                                    }
-                                }
-                            }
-
-                            ViewCompat.setTranslationX(mainLayout, right);
-
-                            if (leftLinear != null && right > 0) {
-                                leftLayoutWidth = (int) Math.abs(right);
-                                setViewWidth(leftLinear, leftLayoutWidth);
-                            }
-
-                            if (rightLinear != null) {
-                                rightLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
-                                setViewWidth(rightLinear, rightLayoutWidth);
+                        if (right > leftLayoutMaxWidth) {
+                            if (!canFullSwipeFromLeft) {
+                                right = leftLayoutMaxWidth;
+                            } else if (right >= getWidth()) {
+                                right = getWidth();
                             }
                         }
 
-                        if (Math.abs(ViewCompat.getTranslationX(mainLayout)) > itemWidth / 5) {
-                            getParent().requestDisallowInterceptTouchEvent(true);
+                        if (canFullSwipeFromLeft) {
+                            if (ViewCompat.getTranslationX(mainLayout) >= getWidth() - fullSwipeEdgePadding) {
+                                if (getViewWeight(leftLinearWithoutFirst) > 0 &&
+                                        (collapseAnim == null || collapseAnim.hasEnded())) {
+
+                                    leftLinearWithoutFirst.clearAnimation();
+
+                                    if (expandAnim != null) expandAnim = null;
+
+                                    collapseAnim = new WeightAnimation(0, leftLinearWithoutFirst);
+
+                                    startAnimation(collapseAnim);
+                                }
+                            } else {
+                                if (getViewWeight(leftLinearWithoutFirst) < leftIcons.length - 1F &&
+                                        (expandAnim == null || expandAnim.hasEnded())) {
+
+                                    leftLinearWithoutFirst.clearAnimation();
+
+                                    if (collapseAnim != null) collapseAnim = null;
+
+                                    expandAnim = new WeightAnimation(leftIcons.length - 1, leftLinearWithoutFirst);
+
+                                    startAnimation(expandAnim);
+                                }
+                            }
                         }
-                        prevRawX = event.getRawX();
-                        lastTime = System.currentTimeMillis();
-                        return true;
+
+                        ViewCompat.setTranslationX(mainLayout, right);
+
+                        if (leftLinear != null && right > 0) {
+                            leftLayoutWidth = (int) Math.abs(right);
+                            setViewWidth(leftLinear, leftLayoutWidth);
+                        }
+
+                        if (rightLinear != null) {
+                            rightLayoutWidth = (int) Math.abs(ViewCompat.getTranslationX(mainLayout));
+                            setViewWidth(rightLinear, rightLayoutWidth);
+                        }
                     }
+
+                    if (Math.abs(ViewCompat.getTranslationX(mainLayout)) > itemWidth / 5) {
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                    prevRawX = event.getRawX();
+                    lastTime = System.currentTimeMillis();
+                    return true;
 
                 case MotionEvent.ACTION_UP:
                     finishMotion(event);
@@ -914,22 +911,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
 
     }
 
-    @Deprecated
     public void setSwipeEnabled(boolean enabled) {
         swipeEnabled = enabled;
     }
 
-    @Deprecated
     public boolean isSwipeEnabled() {
         return swipeEnabled;
-    }
-
-    public void setLeftSwipeEnabled(boolean leftSwipeEnabled) {
-        this.leftSwipeEnabled = leftSwipeEnabled;
-    }
-
-    public void setRightSwipeEnabled(boolean rightSwipeEnabled) {
-        this.rightSwipeEnabled = rightSwipeEnabled;
     }
 
     public boolean inAnimatedState() {
