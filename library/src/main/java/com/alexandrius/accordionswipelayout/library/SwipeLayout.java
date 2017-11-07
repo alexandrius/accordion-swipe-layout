@@ -1026,4 +1026,12 @@ public class SwipeLayout extends FrameLayout implements View.OnTouchListener, Vi
     public interface OnSwipeItemClickListener {
         void onSwipeItemClick(boolean left, int index);
     }
+
+    public void setCanFullSwipeFromLeft(boolean fullSwipeFromLeft) {
+        canFullSwipeFromLeft = fullSwipeFromLeft;
+    }
+
+    public void setCanFullSwipeFromRight(boolean fullSwipeFromRight) {
+        canFullSwipeFromRight = fullSwipeFromRight;
+    }
 }
