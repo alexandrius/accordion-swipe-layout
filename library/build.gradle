@@ -7,7 +7,6 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 19
         versionName "0.5.2"
@@ -23,6 +22,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:support-compat:$compatLibVersion"
-    provided "com.android.support:recyclerview-v7:$compatLibVersion"
+    compile 'androidx.core:core:1.2.0'
+    provided 'androidx.recyclerview:recyclerview:1.1.0'
 }

@@ -5,10 +5,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.alexandrius.accordionswipelayout.sample"
-        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        minSdkVersion 14
     }
     buildTypes {
         release {
@@ -19,9 +19,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:$compatLibVersion"
-    compile "com.android.support:recyclerview-v7:$compatLibVersion"
-//    compile 'com.github.alexandrius:accordion-swipe-layout:0.5.1'
-    compile project(':library')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation project(':library')
 }
