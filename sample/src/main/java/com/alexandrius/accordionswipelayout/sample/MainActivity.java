@@ -1,9 +1,12 @@
 package com.alexandrius.accordionswipelayout.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
-import android.support.v7.widget.DividerItemDecoration;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.*;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.Toast;
 
